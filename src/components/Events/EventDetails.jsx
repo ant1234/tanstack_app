@@ -48,12 +48,12 @@ export default function EventDetails() {
     <>
       {
         isDeleting && 
-        <Modal>
+        <Modal onClose={isDeletingCancelHandler}>
           <p>Are you sure you want to delete</p>
           <p>This action can't be undone...</p>
           <div className='form-actions'>
-            <button onClick={isDeletingCancelHandler}>Cancel</button>
-            <button onClick={isDeletingHandler}>Delete</button>
+            <button className='button-text' onClick={isDeletingCancelHandler}>Cancel</button>
+            <button className='button' onClick={isDeletingHandler}>Delete</button>
           </div>
         </Modal>
       }
