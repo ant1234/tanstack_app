@@ -5,9 +5,12 @@ import { fetchEvent, deleteEvent, queryClient } from '../../util/http';
 import { useParams } from 'react-router-dom';
 import ErrorBlock from '../UI/ErrorBlock.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Modal from '../UI/Modal.jsx';
 
 export default function EventDetails() {
 
+  const [isDeleting, setIsDeleting] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const id = params.id;
@@ -22,18 +25,38 @@ export default function EventDetails() {
     mutationFn: deleteEvent,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['events']
+        queryKey: ['events'],
+        refetchType: 'none'
       });
       navigate('/events');
     }
   });
 
-  const deleteEventHandler = () => {
+  const deleteEventHandler = () => { 
+    setIsDeleting(true);
+  };
+
+  const isDeletingHandler = () => {
     mutate({id: id});
+  };
+
+  const isDeletingCancelHandler = () => {
+    setIsDeleting(false);
   };
   
   return (
     <>
+      {
+        isDeleting && 
+        <Modal>
+          <p>Are you sure you want to delete</p>
+          <p>This action can't be undone...</p>
+          <div className='form-actions'>
+            <button onClick={isDeletingCancelHandler}>Cancel</button>
+            <button onClick={isDeletingHandler}>Delete</button>
+          </div>
+        </Modal>
+      }
       <Outlet />
       <Header>
         <Link to="/events" className="nav-item">
